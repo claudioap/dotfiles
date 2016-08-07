@@ -1,0 +1,229 @@
+set $mod Mod4
+
+set $bg-color 	         #2f343f
+set $inactive-bg-color   #404552
+set $text-color          #ff5500
+set $inactive-text-color #ffffff
+set $urgent-bg-color     #0087af
+
+font pango:Roboto Mono 11
+#font pango:Ubuntu Mono 12
+#font pango:DejaVu Sans Mono 12
+
+### SYSTEM BAR ###
+bar {
+    #tray_output eDP1
+    status_command i3blocks -c ~/.config/i3/blocks
+    position top
+    colors {
+        background $bg-color
+        separator #757575
+        #border            background         text
+        focused_workspace  $bg-color          $bg-color          $text-color
+        inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
+        urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
+    }
+    strip_workspace_numbers yes
+}
+
+#Screen locker script
+set $lock ~/.dotfiles/scripts/lock.sh
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+
+#Program bindings
+bindsym $mod+d exec rofi -show run
+bindsym $mod+Return exec urxvt
+bindsym $mod+Shift+x exec $lock
+
+# focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# move
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# move workspace
+bindsym $mod+Shift+KP_Right move workspace to output right
+bindsym $mod+Shift+KP_6 move workspace to output right
+bindsym $mod+Shift+KP_Left move workspace to output left
+bindsym $mod+Shift+KP_4 move workspace to output left
+###TODO: Same for top and bottom
+
+# split in horizontal orientation
+#bindsym $mod+h split h
+# split in vertical orientation
+#bindsym $mod+v split v
+bindsym $mod+x layout toggle split
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindsym [something] focus child
+
+#Close selected window
+bindsym $mod+Shift+q kill
+
+### WORKSPACES ###
+set $workspace1 "1"
+set $workspace2 "2"
+set $workspace3 "3α"
+set $workspace4 "4β"
+set $workspace5 "5γ"
+set $workspace6 "6λ"
+set $workspace7 "7ε"
+set $workspace8 "8φ"
+set $workspace9 "9ω"
+set $workspace10 "10"
+
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
+bindsym $mod+4 workspace $workspace4
+bindsym $mod+5 workspace $workspace5
+bindsym $mod+6 workspace $workspace6
+bindsym $mod+7 workspace $workspace7
+bindsym $mod+8 workspace $workspace8
+bindsym $mod+9 workspace $workspace9
+bindsym $mod+0 workspace $workspace10
+
+bindsym $mod+Shift+1 move container to workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9
+bindsym $mod+Shift+0 move container to workspace $workspace10
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Please think twice. This shit doesn't work with GDM. Fuck GDM!.' -b 'Go on...' 'i3-msg exit'"
+#DELETEME
+
+### MEDIA KEYS ###
+# Brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+# Keyboard backlight
+bindsym XF86KbdBrightnessUp exec ~/.dotfiles/scripts/kbd-light.py +
+bindsym XF86KbdBrightnessDown exec ~/.dotfiles/scripts/kbd-light.py -
+
+# Touchpad controls
+bindsym XF86TouchpadToggle exec ~/.config/i3/toggletouchpad.sh
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# scrot & gimp - root
+bindsym Print exec scrot -e 'mv $f /tmp/ && eog /tmp/$f'
+# scrot & gimp - select window or rectangle
+#TODO it doesnt work as a keybind anymore for some reason but works if manually typed
+#bindsym Print exec scrot -s -e 'mv $f /tmp/ && eog /tmp/$f'
+
+### MODES ###
+#Resize mode
+mode "  " {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Escape mode "default"
+}
+
+set $system_mode Lock(Space) Logout(Bspace) Suspend(s) Hibernate(h) Shutdown(Return) Reboot(Shift+Return)
+mode "$system_mode" {
+    bindsym space exec $lock, mode "default"
+    bindsym backspace exit
+    bindsym s exec $lock  && systemctl suspend, mode "default"
+    bindsym h exec $lock && systemctl hibernate, mode "default"
+    bindsym Shift+Return exec systemctl reboot, mode "default"
+    bindsym Return exec systemctl poweroff -i, mode "default"
+    # Exit system_mode
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "  "
+bindsym $mod+Pause mode "$system_mode"
+
+# Floating
+#for_window [class="Pavucontrol"] floating enable
+
+### STYLING ###
+# Window border thickness
+for_window [class="^.*"] border pixel 1
+#i3gaps stuff, not worth to use ATM
+#gaps inner 5
+#gaps outer 5
+#smart_gaps on
+
+# Window Colors         border              background         text                 indicator
+client.focused          #ff5500             #ff5500            #FFFFFF          #00ff00
+client.unfocused        $inacative-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.focused_inactive $inacative-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          #00ff00
+
+
+
+
+# Capslock in i3Blocks (Something to do with i3blocks, investigate)
+bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+bindsym --release Num_Lock exec pkill -SIGRTMIN+11 i3blocks
+
+# Program workspace assignment
+assign [class="URxvt"] $workspace1
+assign [class="Firefox"] $workspace2
+assign [class="Hexchat"] $workspace7
+assign [class="Feedreader"] $workspace8
+assign [class="Transmission-gtk"] $workspace8
+assign [class="qBittorrent"] $workspace8
+assign [class="Messenger" title="Messenger"] $workspace9
+assign [class="Skype"] $workspace9
+assign [class="skypeforlinux"] $workspace9
+assign [class="Clementine"] $workspace10
+
+# Startup
+#exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/Minimal.jpg
+exec --no-startup-id ~/.dotfiles/scripts/setlayout.sh
+#exec_always --no-startup-id nitrogen --restore
+#exec ~/.dotfiles/scripts/lock.sh
+exec compton
+exec --no-startup-id nm-applet
+#exec feedreader
+#exec clementine
+#exec /usr/libexec/gnome-settings-daemon
+
